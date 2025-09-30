@@ -23,7 +23,13 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
         An approximation of $f'_i(x_0, \ldots, x_{n-1})$
     """
     # TODO: Implement for Task 1.1.
-    raise NotImplementedError('Need to implement for Task 1.1')
+    plus_val = vals[arg] + epsilon
+    minus_val = vals[arg] - epsilon
+
+    new_params1 = vals[:arg] + (plus_val,) + vals[arg+1:]
+    new_params2 = vals[:arg] + (minus_val,) + vals[arg+1:]
+
+    return (f(*new_params1) - f(*new_params2)) / (2 * epsilon)
 
 
 variable_count = 1
@@ -62,7 +68,22 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
         Non-constant Variables in topological order starting from the right.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    visited = set()
+    result = []
+    
+    def dfs(node: Variable) -> None:
+        if node.unique_id in visited:
+            return
+        visited.add(node.unique_id)
+        
+        for parent in node.parents:
+            if not parent.is_constant(): 
+                dfs(parent)
+        
+        result.append(node)
+    
+    dfs(variable)
+    return result
 
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
@@ -77,7 +98,24 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    gradients = {variable.unique_id: deriv}
+    
+    for node in reversed(topological_sort(variable)):
+        grad = gradients.get(node.unique_id)
+        if grad is None:
+            continue
+            
+        if not node.is_constant():
+            input_grads = node.chain_rule(grad)
+
+            for input_var, input_grad in input_grads:
+                if input_var.is_leaf():
+                    input_var.accumulate_derivative(input_grad)
+                else:
+                    if input_var.unique_id in gradients:
+                        gradients[input_var.unique_id] += input_grad
+                    else:
+                        gradients[input_var.unique_id] = input_grad
 
 
 @dataclass

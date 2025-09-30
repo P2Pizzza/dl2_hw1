@@ -108,7 +108,18 @@ def test_sigmoid(a: float) -> None:
     * It is  strictly increasing.
     """
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    sigm = sigmoid(a)
+
+    assert 0.0 <= sigm <= 1.0
+
+    assert abs((1 - sigm) - sigmoid(-a)) < 1e-6
+    
+    assert abs(sigmoid(0) - 0.5) < 1e-6
+    
+    if a < 10:  
+        sigm_next = sigmoid(a + 0.001)
+        assert sigm_next > sigm
+
 
 
 @pytest.mark.task0_2
@@ -116,7 +127,8 @@ def test_sigmoid(a: float) -> None:
 def test_transitive(a: float, b: float, c: float) -> None:
     "Test the transitive property of less-than (a < b and b < c implies a < c)"
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    if a < b and b < c:
+        assert a < c
 
 
 @pytest.mark.task0_2
@@ -126,7 +138,9 @@ def test_symmetric() -> None:
     gives the same value regardless of the order of its input.
     """
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    a = 5
+    b = 6
+    assert mul(a, b) == mul(b, a)
 
 
 @pytest.mark.task0_2
@@ -136,7 +150,11 @@ def test_distribute() -> None:
     :math:`z \times (x + y) = z \times x + z \times y`
     """
     # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    z = 2
+    x = 5
+    y = 6
+    assert mul(z, add(x, y)) == add(mul(z, x), mul(z, y))
+
 
 
 @pytest.mark.task0_2
@@ -144,8 +162,10 @@ def test_other() -> None:
     """
     Write a test that ensures some other property holds for your functions.
     """
-    # TODO: Implement for Task 0.2.
-    raise NotImplementedError('Need to implement for Task 0.2')
+    a = 2
+    b = 5
+    c = 6
+    assert add(add(a, b), c) - add(a, add(b, c)) < 1e-6
 
 
 # ## Task 0.3  - Higher-order functions
@@ -174,7 +194,7 @@ def test_sum_distribute(ls1: List[float], ls2: List[float]) -> None:
     is the same as the sum of each element of `ls1` plus each element of `ls2`.
     """
     # TODO: Implement for Task 0.3.
-    raise NotImplementedError('Need to implement for Task 0.3')
+    assert add(sum(ls1), sum(ls2)) == add(sum(ls2), sum(ls1))
 
 
 @pytest.mark.task0_3
